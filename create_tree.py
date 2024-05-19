@@ -6,15 +6,15 @@ def perform_operations(quaternions):
     results = []
     lower_64_bits_mask = (1 << 64) - 1
     modulus = 2**64
-    # Перебираємо кватерніони
+    print(f"Len: {len(quaternions)}")
     for i in range(len(quaternions)):
-        a1, b1, c1, d1 = quaternions[i].a, quaternions[i].b, quaternions[i].c, quaternions[i].d
+        a4, b4, c4, d4 = quaternions[i].a, quaternions[i].b, quaternions[i].c, quaternions[i].d
         
         # Перебираємо решту кватерніонів
         for j in range(i+1, len(quaternions)):
-            a2, b2, c2, d2 = quaternions[j].a, quaternions[j].b, quaternions[j].c, quaternions[j].d
             a3, b3, c3, d3 = quaternions[j-1].a, quaternions[j-1].b, quaternions[j-1].c, quaternions[j-1].d
-            a4, b4, c4, d4 = quaternions[j-2].a, quaternions[j-2].b, quaternions[j-2].c, quaternions[j-2].d
+            a2, b2, c2, d2 = quaternions[j-2].a, quaternions[j-2].b, quaternions[j-2].c, quaternions[j-2].d
+            a1, b1, c1, d1 = quaternions[j-3].a, quaternions[j-3].b, quaternions[j-3].c, quaternions[j-3].d
     print(f"Quaternion 1 parts : {a1} -- {b1} -- {c1} -- {d1}")
     print(f"Quaternion 2 parts : {a2} -- {b2} -- {c2} -- {d2}")
     print(f"Quaternion 3 parts : {a3} -- {b3} -- {c3} -- {d3}")
