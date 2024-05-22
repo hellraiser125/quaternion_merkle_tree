@@ -30,6 +30,7 @@ def read_chunks_from_file(file_path):
             decimal_values = list(struct.unpack('B' * len(chunk), chunk))
             chunk_dict[chunk_number] = decimal_values
             chunk_number += 1
+    #breakpoint()
     return chunk_dict
 
 def reduce_data(data):
@@ -42,13 +43,15 @@ def reduce_data(data):
     Returns:
         Quaternion: The final reduced quaternion obtained after performing operations on the input data.
     """
-    while len(data) > 1:
+    created_counter = 0         # Once create the q-on add `1` to its value   
+    while len(data) >= 1:
         if len(data) >= 4:
             print("\nStart performing operations to 4 Quaternions\n")
             reduced = []
             i = 0
-            while i <= len(data) - 4:
-                reduced.append(perform_operations(data[i:i+4]))
+            while i <= len(data) - 4 or i < len(data[created_counter::])-4:
+               # breakpoint()
+                reduced.append(*perform_operations(data[i:i+4]))
                 i += 4
             data = reduced + data[i:]
         elif len(data) >= 2:
@@ -56,7 +59,7 @@ def reduce_data(data):
             reduced = []
             i = 0
             while i <= len(data) - 2:
-                reduced.append(multiply_quaternions(data[i:i+2]))
+                reduced.append(*multiply_quaternions(data[i:i+2]))
                 i += 2
             data = reduced + data[i:]
         else:
@@ -71,9 +74,10 @@ def main():
     data = read_chunks_from_file(file_path)
     processor = QuaternionProcessor(data)
     quaternions = processor.make_quaternion()
+    print(len(quaternions))
     res = multiply_quaternions(quaternions)   
     results = reduce_data(res)
-    print(*results)
+
 
 
 if __name__ == '__main__':

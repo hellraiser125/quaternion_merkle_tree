@@ -3,6 +3,41 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor-specific files
+.vscode/
+
+# Dependency directories
+node_modules/
+bower_components/
+
+# Compiled files
+*.log
+*.log*
+*.sqlite
+*.sqlite3
+*.csv
+
+# Environment configuration files
+.env
+
+# Package files
+*.tgz
+*.zip
+
+# Mac-specific
+.AppleDouble
+.LSOverride
+
+# Windows-specific
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+
 # C extensions
 *.so
 
@@ -147,3 +182,8 @@ venv_old/
 
 # PyCharm
 .idea/
+
+# Abstract
+*.docx
+*.txt
+.vs
