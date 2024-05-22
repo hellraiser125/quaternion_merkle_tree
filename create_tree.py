@@ -6,7 +6,18 @@ import struct
 
 
 def read_chunks_from_file(file_path):
-    """ Reads a file in chunks of 8 bytes and returns a dictionary with chunk numbers as keys and decimal values as values. If the chunk size is less than 8 bytes, the missing elements are padded with zeros. """
+    """
+    Reads a file in chunks of 8 bytes and returns a dictionary with chunk numbers as keys 
+    and decimal values as values. If the chunk size is less than 8 bytes, the missing elements 
+    are padded with zeros.
+
+    Args:
+        file_path (str): The path to the file to be read.
+
+    Returns:
+        dict: A dictionary where keys represent chunk numbers and values represent lists of decimal values.
+              Each list contains decimal values extracted from a chunk of 8 bytes.
+    """
     chunk_dict = {}
     chunk_number = 1
     with open(file_path, 'rb') as file:  # Open in binary mode for byte reading
@@ -22,86 +33,47 @@ def read_chunks_from_file(file_path):
     return chunk_dict
 
 def reduce_data(data):
-    #breakpoint()
+    """
+    Reduces a list of quaternions by performing operations on chunks of quaternions iteratively until only one quaternion remains.
+
+    Args:
+        data (list): A list of quaternions.
+
+    Returns:
+        Quaternion: The final reduced quaternion obtained after performing operations on the input data.
+    """
     while len(data) > 1:
         if len(data) >= 4:
+            print("\nStart performing operations to 4 Quaternions\n")
             reduced = []
             i = 0
             while i <= len(data) - 4:
                 reduced.append(perform_operations(data[i:i+4]))
                 i += 4
-            # Додаємо залишок елементів, які не змогли згорнутися на цьому рівні
             data = reduced + data[i:]
         elif len(data) >= 2:
+            print("\nStart performing operations to 2 Quaternions\n")
             reduced = []
             i = 0
             while i <= len(data) - 2:
                 reduced.append(multiply_quaternions(data[i:i+2]))
                 i += 2
-            # Додаємо залишок елементів, які не змогли згорнутися на цьому рівні
             data = reduced + data[i:]
         else:
-            break  # Якщо залишився лише один елемент, то зупиняємося
-    return data[0][0]
+            break  
+    return data[0]
 
 def main():
     """
     Main entry point of the program.
     """
-    file_path = 'test_str.txt'  # Replace with your file path
+    file_path = 'test_str.txt'  
     data = read_chunks_from_file(file_path)
-    # processor = QuaternionProcessor(data)
-    # quaternions = processor.make_quaternion()
-    # for data in quaternions:
-    #     print(data)
-    # print("--------------------------------------------------")
-    # print("Quaternions After Multiplication")
-    # print("--------------------------------------------------")
-    
     processor = QuaternionProcessor(data)
     quaternions = processor.make_quaternion()
-    for data in quaternions:
-        print(f"Data ---> {data}")
-    res = multiply_quaternions(quaternions)
-    
+    res = multiply_quaternions(quaternions)   
     results = reduce_data(res)
-
-    print(results)
-
-
-
-    # operation_results = perform_operations(multiply_results)
-    # # Виведення результатів операцій
-    # for result in operation_results:
-    #     print(f"Results after completed operations:")
-    #     print(f"a1: {result[0]}")
-    #     print(f"b1: {result[1]}")
-    #     print(f"c1: {result[2]}")
-    #     print(f"d1: {result[3]}")
-    #     print("-----------------------")
-    #     print(f"a2: {result[4]}")
-    #     print(f"b2: {result[5]}")
-    #     print(f"c2: {result[6]}")
-    #     print(f"d2: {result[7]}")
-    #     print("-----------------------")
-    #     print(f"a3: {result[8]}")
-    #     print(f"b3: {result[9]}")
-    #     print(f"c3: {result[10]}")
-    #     print(f"d3: {result[11]}")
-    #     print("-----------------------")
-    #     print(f"a4: {result[12]}")
-    #     print(f"b4: {result[13]}")
-    #     print(f"c4: {result[14]}")
-    #     print(f"d4: {result[15]}")
-    #     print("-----------------------")
-    # data = sum_quaternion_parts_with_modulus(operation_results)
-    # for q in data:
-    #     print(f"Parts of new q  --> {q}\n")
-
-    # processor = QuaternionProcessor(data)
-    # new_q = processor.make_quaternion()
-    # print (f"New quaternion from 16 results ---> {new_q}")
-    
+    print(*results)
 
 
 if __name__ == '__main__':
