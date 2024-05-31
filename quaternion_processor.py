@@ -1,9 +1,4 @@
 import struct
-from typing import Union
-
-
-
-
 from typing import Union, List, Dict
 
 class Quaternion:
@@ -88,6 +83,11 @@ class Quaternion:
             str: A string in the form "a + (b)i + (c)j + (d)k".
         """
         return f"{self.a} + ({self.b})i + ({self.c})j + ({self.d})k"
+    
+    def __eq__(self, value: object) -> bool:
+        if self.a == value.a and self.b == value.b and self.c == value.c and self.d == value.d:
+            return True
+        return False
 
     def __mul__(self, other):
         """
@@ -166,7 +166,7 @@ def multiply_quaternions(quaternions):
     # Multiply each quaternion sequentially
     for i in range(1, len(quaternions)):
         mul = mul * quaternions[i]
-        print(f"After multiplying with quaternion {i}: {mul}")
+        #print(f"Result of multiply 2 quaternions: {mul}")
         result.append(mul)
     
     return result
