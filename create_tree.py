@@ -1,7 +1,7 @@
 from quaternion_processor import QuaternionProcessor, multiply_quaternions, perform_operations, convolution_three_elements
 #from test import perform_operations
 import struct,math
-
+from tabulate import tabulate
 
 
 
@@ -43,7 +43,7 @@ def reduce_data(data):
     Returns:
         Quaternion: The final reduced quaternion obtained after performing operations on the input data.
     """
-    print("\nPerforming operations\n")
+    print("\n[+]Building tree process starting...[+]\n")
     tree = []
     tree.append(data)
     while len(data) > 1:
@@ -51,15 +51,15 @@ def reduce_data(data):
         i = 0
         while i < len(data):
             if i + 4 <= len(data):
-                print("\nStart performing operations to 4 Quaternions\n")
+                #print("\nStart performing operations to 4 Quaternions\n")
                 new_data.append(*perform_operations(data[i:i + 4]))
                 i += 4
             elif i + 3 <= len(data):
-                print("\nStart performing operations to 3 Quaternions\n")
+                #print("\nStart performing operations to 3 Quaternions\n")
                 new_data.append(*convolution_three_elements(data[i:i + 3]))
                 i += 3
             elif i + 2 <= len(data):
-                print("\nStart performing operations to 2 Quaternions\n")
+                #print("\nStart performing operations to 2 Quaternions\n")
                 new_data.append(*multiply_quaternions(data[i:i + 2]))
                 i += 2
             else:
@@ -69,7 +69,7 @@ def reduce_data(data):
         tree.append(data)
    
     
-    print(f"\nFinal state of data: {tree[2][0]}\n")  # Print the final state of data
+    #print(f"\nFinal state of data: {tree[2][0]}\n")  # Print the final state of data
     return tree
 
 
@@ -118,6 +118,8 @@ class Proof:
                 print("Checked transaction not a part of tree")
                 return
         while curent_level != self.height_of_tree() + 1:
+            if self.checked_transaction == None:
+                break
             print(f"\nChecked transaction ----> {self.checked_transaction}\n") 
             part_of_next_transaction = (self.checked_transaction // 4)
             print(f"Checked transaction part of --> {part_of_next_transaction}")
@@ -129,32 +131,33 @@ class Proof:
                 start_transaction = (part_of_next_transaction) * 4 + k
                 print(f"Transaction {part_of_next_transaction} contain {self.tree[curent_level-1][start_transaction]}")
                 checked_tree.append(self.tree[curent_level-1][start_transaction])
-            for data in checked_tree:
-                print(f"Data ---> {data}")
-
-            print(f"Data length ---> {len(checked_tree)}")
             new_data = []
             i = 0
             while i < len(checked_tree):
                 if i + 4 <= len(checked_tree):
-                    print("\nStart performing operations to 4 Quaternions\n")
+                    #print("\nStart performing operations to 4 Quaternions\n")
                     new_data.append(*perform_operations(checked_tree[i:i + 4]))
                     i += 4
                 elif i + 3 <= len(checked_tree):
-                    print("\nStart performing operations to 3 Quaternions\n")
+                    #print("\nStart performing operations to 3 Quaternions\n")
                     new_data.append(*convolution_three_elements(checked_tree[i:i + 3]))
                     i += 3
                 elif i + 2 <= len(checked_tree):
-                    print("\nStart performing operations to 2 Quaternions\n")
+                    #print("\nStart performing operations to 2 Quaternions\n")
                     new_data.append(*multiply_quaternions(checked_tree[i:i + 2]))
                     i += 2
                 else:
                     new_data.append(checked_tree[i])
                     i += 1
+            print(f"\nCreated item from transactions: {new_data[0]}")
             self.checked_transaction = part_of_next_transaction
             curent_level += 1
 
-        print(new_data[0] == self.tree[self.height_of_tree()][0])
+        if new_data[0] == self.tree[self.height_of_tree()][0]:
+            print(f"\n[+]Transaction {self.checked_transaction} is a part of tree[+]\n")
+        else:
+            print(f"\n[+]Transaction {self.checked_transaction} is`n a part of tree. Seems like transaction appears to have been modified, or was not part of the tree at all\n[+]")
+        
 
                 
        
@@ -170,16 +173,30 @@ def main():
     quaternions = processor.make_quaternion()
     res = multiply_quaternions(quaternions)   
     i = 0
-    for data in res:
-        print(f"Zero level: {i} {data}")
-        i+=1
+    first_level = [["Zero level data"]]
+    for quaternion in res:
+        first_level.append([str(quaternion)])
+    print(tabulate(first_level, headers="firstrow", tablefmt="grid"))
+    # for data in res:
+    #     print(f"Zero level {i+1} with index {i} {data}")
+    #     i+=1
     results = reduce_data(res)
-    proof = Proof(results,67)
+    
+    table_data = []
+    for level, sublist in enumerate(results):
+        table_data.append([f"{level} level of tree"])
+        for quaternion in sublist:
+            table_data.append([str(quaternion)])
 
+    print(tabulate(table_data, tablefmt="grid"))
+   
+    print("\n[+] Start proofing tree transaction membership[+]")
+    transaction_for_proof = int(input("\nEnter the transaction you want to check ---> "))
+    proof = Proof(results,transaction_for_proof)
     print("Number of elements:", proof.number_of_elements())
     print("Complete sets of 4:", proof.complete_sets_of_4())
     print("Height of tree:", proof.height_of_tree())
-    print("Transaction for proof", proof.proof_transaction())
+    proof.proof_transaction()
 
 
 if __name__ == '__main__':

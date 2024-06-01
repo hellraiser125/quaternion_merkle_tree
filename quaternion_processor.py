@@ -368,7 +368,7 @@ def perform_operations(quaternions):
     results.append((result_a_1,result_a_2,result_a_3,result_a_4,result_b_1,result_b_2,result_b_3,result_b_4,result_c_1,result_c_2,result_c_3,result_c_4,result_d_1,result_d_2,result_d_3,result_d_4))
 
     final_result = sum_quaternion_parts_with_modulus(results)
-    print(*final_result)
+    #print(*final_result)
 
     return final_result
 
@@ -502,7 +502,7 @@ def convolution_three_elements(quaternions):
     results.append((result_a_1,result_a_2,result_a_3,result_a_4,result_b_1,result_b_2,result_b_3,result_b_4,result_c_1,result_c_2,result_c_3,result_c_4,result_d_1,result_d_2,result_d_3,result_d_4))
 
     final_result = sum_quaternion_parts_with_modulus(results)
-    print(*final_result)
+    #print(*final_result)
 
     return final_result
 
